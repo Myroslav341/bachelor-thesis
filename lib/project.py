@@ -1,2 +1,5 @@
+import logging
+
+
 def start_project():
-    pass
+    logging.basicConfig(level=logging.INFO)

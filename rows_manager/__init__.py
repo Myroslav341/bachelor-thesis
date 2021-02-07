@@ -10,8 +10,6 @@ from lib import (
 )
 from lib.decorators import singleton
 
-logging.basicConfig(level=logging.INFO)
-
 
 @dataclass
 class MatrixRow:
