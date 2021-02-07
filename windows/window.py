@@ -92,13 +92,13 @@ class AppWindow(QtWidgets.QMainWindow, PaintUI):
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_A:
             painter = QPainter(self.image)
-            painter.setPen(QPen(Qt.blue, 4, Qt.SolidLine))
 
             self.rows_manager.process()
             for row in self.rows_manager.rows:
                 if not row.vectors_list:
                     continue
                 x, y, w, z = row.final_vector.paint_format()
+                painter.setPen(QPen(Qt.blue, 4, Qt.SolidLine))
                 painter.drawLine(x, y, w, z)
                 self.update()
 

@@ -1,6 +1,8 @@
 import logging
 from dataclasses import dataclass, field
-from typing import List, Optional
+from typing import List, Optional, Tuple
+
+from config import config
 from lib import (
     Dot,
     Vector,
@@ -23,6 +25,9 @@ class MatrixRow:
     _top_dot: Optional[Dot] = field(default=None)
     _bottom_dot: Optional[Dot] = field(default=None)
 
+    def __post_init__(self):
+        self._is_vector_extended = False
+
     @property
     def final_vector(self) -> Vector:
         """Beginning of the first vector -> end of the last vector. Basically the vector of the row."""
@@ -30,7 +35,11 @@ class MatrixRow:
 
     def add_hatch(self, vector: Vector, top: Dot, bottom: Dot):
         """Save new hatch to the row."""
-        self.vectors_list.append(vector)
+        if len(self.vectors_list) == 1 and not self._is_vector_extended:
+            self.vectors_list[0].end = vector.end
+            self._is_vector_extended = True
+        else:
+            self.vectors_list.append(vector)
         self._update_top(top)
         self._update_bottom(bottom)
 
@@ -123,13 +132,16 @@ class RowsManager:
         self.bottom_list.append(bottom)
 
     def process(self) -> List[MatrixRow]:
-        """Processing saved data to distinguish rows."""
-        self.rows: List[MatrixRow] = []
+        """Processing saved data to distinguish matrix rows."""
+        self.rows: List[MatrixRow] = [MatrixRow(0)]
+        self.rows[0].vectors_list = [self.vectors[0]]
+
         row_id = 0
 
         # identifier for the number of current hatch, used for logs
         i = -1
-        # bool flag is current hatch was added to already distinguished row
+
+        # bool flag is the last hatch was ignored because found a row for it
         is_added_to_existing_row = False
 
         for cos, vector, top, bottom in zip(
@@ -138,26 +150,25 @@ class RowsManager:
             i += 1
             is_added_to_existing_row = False
             logging.info(f"processing hatch {i}")
-            if cos <= 90:
-                if not self.rows:
-                    row_id += 1
-                    self.rows.append(MatrixRow(row_id))
-                self.rows[-1].add_hatch(vector, top, bottom)
+
+            if cos <= config.NEW_ROW_ANGLE:
+                # add this hatch to current row because angle is smaller than config
+                self._add_hatch_to_current_row(vector=vector, top=top, bottom=bottom)
             else:
-                # checking existing rows
-                for row in self.rows:
-                    is_inside_row = row.is_dot_inside_row(vector.end)
-                    if is_inside_row:
-                        is_added_to_existing_row = True
-                        break
-                if not is_added_to_existing_row:
-                    row_id += 1
-                    self.rows.append(MatrixRow(row_id))
-                    self.rows[-1]._update_top(top)  # noqa
-                    self.rows[-1]._update_bottom(bottom)  # noqa
+                # ignore this hatch if row will be found or create a new row
+                is_added_to_existing_row, row_id = self._process_hatch_not_current_row(
+                    row_id,
+                    vector=vector,
+                    top=top,
+                    bottom=bottom
+                )
+
+        # updating the last row with top and bottom of the last digit
         if not is_added_to_existing_row:
             self.rows[-1]._update_top(self.top_list[-1])  # noqa
             self.rows[-1]._update_bottom(self.bottom_list[-1])  # noqa
+
+        logging.info(f"was processed {i + 1} hatches, and was distinguished {len(self.rows)} rows.")
 
         return self.rows
 
@@ -168,3 +179,35 @@ class RowsManager:
         self.top_list = []
         self.bottom_list = []
         self.cos_list = []
+
+    def _add_hatch_to_current_row(self, *, vector: Vector, top: Dot, bottom: Dot):
+        """Save hutch to the current row."""
+        self.rows[-1].add_hatch(vector, top, bottom)
+
+    def _process_hatch_not_current_row(
+        self,
+        row_id: int,
+        *,
+        vector: Vector,
+        top: Dot,
+        bottom: Dot,
+    ) -> Tuple[bool, int]:
+        is_added_to_existing_row = False
+
+        # checking existing rows, if match will be found hatch will be ignored
+        for row in self.rows:
+            if row.top and row.bottom and row.is_dot_inside_row(vector.end):
+                is_added_to_existing_row = True
+                break
+
+        # if no row was found for this hatch, create new row
+        if not is_added_to_existing_row:
+            row_id += 1
+            # updating top and bottom of the previous row before creating a new one
+            self.rows[-1]._update_top(top)  # noqa
+            self.rows[-1]._update_bottom(bottom)  # noqa
+            # creating a new row and init vector with a dot
+            self.rows.append(MatrixRow(row_id))
+            self.rows[-1].vectors_list = [Vector(vector.end, vector.end)]
+
+        return is_added_to_existing_row, row_id
