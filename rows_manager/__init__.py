@@ -99,7 +99,7 @@ class RowsManager:
             i += 1
             added_to_existing_row = False
             logging.info(f"processing hatch {i}")
-            if cos <= 70:
+            if cos <= 90:
                 if not self.rows:
                     row_id += 1
                     self.rows.append(MatrixRow(row_id))
@@ -112,22 +112,10 @@ class RowsManager:
                         added_to_existing_row = True
                         break
                 if not added_to_existing_row:
-                    if not self.rows:
-                        # creating two rows, one for row 1 and second for row 2
-                        # example: row1: 1, row2: 2
-                        row_id += 1
-                        self.rows.append(MatrixRow(row_id))
-                        self.rows[-1]._top_dot = top  # noqa
-                        self.rows[-1]._bottom_dot = bottom  # noqa
-                        self.rows[-1].vectors_list.append(Vector(vector.begin, vector.begin))
-                        row_id += 1
-                        self.rows.append(MatrixRow(row_id))
-                        self.rows[-1].vectors_list.append(Vector(vector.end, vector.end))
-                    else:
-                        row_id += 1
-                        self.rows.append(MatrixRow(row_id))
-                        self.rows[-1]._top_dot = top  # noqa
-                        self.rows[-1]._bottom_dot = bottom  # noqa
+                    row_id += 1
+                    self.rows.append(MatrixRow(row_id))
+                    self.rows[-1]._update_top(top)  # noqa
+                    self.rows[-1]._update_bottom(bottom)  # noqa
         if not added_to_existing_row:
             self.rows[-1]._update_top(self.top_list[-1])  # noqa
             self.rows[-1]._update_bottom(self.bottom_list[-1])  # noqa
