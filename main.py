@@ -12,5 +12,5 @@ def start_window():
     app.exec()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     start_window()

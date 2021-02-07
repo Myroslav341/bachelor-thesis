@@ -1,7 +1,13 @@
 import logging
 from dataclasses import dataclass, field
 from typing import List, Optional
-from lib import Dot, Vector, get_middle_dot, get_angle_between_vectors, get_dist_to_straight, get_triangle_square
+from lib import (
+    Dot,
+    Vector,
+    get_angle_between_vectors,
+    get_dist_to_straight,
+    get_triangle_square,
+)
 from lib.decorators import singleton
 
 logging.basicConfig(level=logging.INFO)
@@ -44,23 +50,31 @@ class MatrixRow:
     def _update_top(self, new_top: Dot):
         if not self.vectors_list:
             return
-        d = get_dist_to_straight(new_top, self.final_vector.begin, self.final_vector.end)
+        d = get_dist_to_straight(
+            new_top, self.final_vector.begin, self.final_vector.end
+        )
         if self.top < d:
             self._top_dot = new_top
             self.top = d
         else:
-            d = get_dist_to_straight(self._top_dot, self.final_vector.begin, self.final_vector.end)
+            d = get_dist_to_straight(
+                self._top_dot, self.final_vector.begin, self.final_vector.end
+            )
             self.top = d
 
     def _update_bottom(self, new_bottom: Dot):
         if not self.vectors_list:
             return
-        d = get_dist_to_straight(new_bottom, self.final_vector.begin, self.final_vector.end)
+        d = get_dist_to_straight(
+            new_bottom, self.final_vector.begin, self.final_vector.end
+        )
         if self.bottom < d:
             self._bottom_dot = new_bottom
             self.bottom = d
         else:
-            d = get_dist_to_straight(self._bottom_dot, self.final_vector.begin, self.final_vector.end)
+            d = get_dist_to_straight(
+                self._bottom_dot, self.final_vector.begin, self.final_vector.end
+            )
             self.bottom = d
 
 
@@ -85,7 +99,9 @@ class RowsManager:
 
         prev_vector_end = self.vectors[-1].end
         self.vectors.append(Vector(prev_vector_end, middle_dot))
-        self.cos_list.append(get_angle_between_vectors(self.vectors[-1], Vector((0, 0), (1, 0))))
+        self.cos_list.append(
+            get_angle_between_vectors(self.vectors[-1], Vector((0, 0), (1, 0)))
+        )
         self.top_list.append(top)
         self.bottom_list.append(bottom)
 
@@ -95,7 +111,9 @@ class RowsManager:
 
         i = -1
         added_to_existing_row = False
-        for cos, vector, top, bottom in zip(self.cos_list, self.vectors[1:], self.top_list, self.bottom_list):
+        for cos, vector, top, bottom in zip(
+            self.cos_list, self.vectors[1:], self.top_list, self.bottom_list
+        ):
             i += 1
             added_to_existing_row = False
             logging.info(f"processing hatch {i}")

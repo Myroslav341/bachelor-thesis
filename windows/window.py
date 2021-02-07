@@ -116,14 +116,15 @@ class AppWindow(QtWidgets.QMainWindow, PaintUI):
         if path is not None:
             path, _ = QFileDialog.getSaveFileName(
                 self,
-                "Save Image", "",
-                "PNG(*.png);;JPEG(*.jpg *.jpeg);;All Files(*.*) "
+                "Save Image",
+                "",
+                "PNG(*.png);;JPEG(*.jpg *.jpeg);;All Files(*.*) ",
             )
 
             if path == "":
                 return
             self.image.save(path)
         else:
-            name = ''.join([random.choice(ascii_lowercase) for _ in range(8)]) + '.png'
-            self.image.save(Config.BASE_DIR + '/tests/' + name)
-            return Config.BASE_DIR + '/tests/' + name
+            name = "".join([random.choice(ascii_lowercase) for _ in range(8)]) + ".png"
+            self.image.save(Config.BASE_DIR + "/tests/" + name)
+            return Config.BASE_DIR + "/tests/" + name

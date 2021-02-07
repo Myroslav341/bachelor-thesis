@@ -6,7 +6,7 @@ a1, a2 = (1, 1), (4, 1)
 b1, b2 = (1, 3), (4, 4)
 x = (2, 2)
 
-alpha = get_angle_between_vectors(Vector(a1, a2),  Vector(b1, b2)) // 2
+alpha = get_angle_between_vectors(Vector(a1, a2), Vector(b1, b2)) // 2
 print(f"alpha = {alpha}")
 
 

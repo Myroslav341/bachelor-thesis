@@ -1,5 +1,5 @@
 import math
-from typing import List, Tuple
+from typing import Tuple
 
 from lib.structures import Dot, DotInt, Vector
 
@@ -25,8 +25,8 @@ def get_angle_between_vectors(vector_1: Vector, vector_2: Vector) -> float:
 
 
 def get_cos_between_vectors(vector_1: Vector, vector_2: Vector) -> float:
-    a = (vector_1 * vector_2)
-    b = (vector_1.len * vector_2.len)
+    a = vector_1 * vector_2
+    b = vector_1.len * vector_2.len
 
     return a / b
 
@@ -38,7 +38,7 @@ def get_dist_to_straight(d: Dot, a: Dot, b: Dot):
 
 
 def get_dist_between_dots(a: Dot, b: Dot):
-    return math.sqrt((b[0] - a[0]) ** 2 + (b[1] - a[1]) **2)
+    return math.sqrt((b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2)
 
 
 def get_straight_coefficients(a: Dot, b: Dot) -> Tuple[float, float, float]:
@@ -61,6 +61,10 @@ def get_straight_coefficients(a: Dot, b: Dot) -> Tuple[float, float, float]:
 
 
 def get_triangle_square(a, b, c):
-    d1, d2, d3 = get_dist_between_dots(a, b), get_dist_between_dots(b, c), get_dist_between_dots(c, a)
+    d1, d2, d3 = (
+        get_dist_between_dots(a, b),
+        get_dist_between_dots(b, c),
+        get_dist_between_dots(c, a),
+    )
     s = (d1 + d2 + d3) / 2
     return math.sqrt(s * (s - d1) * (s - d2) * (s - d3))

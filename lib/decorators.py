@@ -8,6 +8,7 @@ def singleton_generator():
                 return instances[class_.__name__]
             else:
                 return instances[class_.__name__]
+
         return wrapper
 
     singleton_decorator.all = instances

@@ -17,7 +17,9 @@ class Vector:
 
     @property
     def len(self) -> float:
-        return math.sqrt((self.end[0] - self.begin[0]) ** 2 + (self.end[1] - self.begin[1]) ** 2)
+        return math.sqrt(
+            (self.end[0] - self.begin[0]) ** 2 + (self.end[1] - self.begin[1]) ** 2
+        )
 
     def paint_format(self) -> Tuple[int, int, int, int]:
         from lib import dot_to_int
