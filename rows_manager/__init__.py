@@ -97,6 +97,9 @@ class MatrixRow:
 @singleton
 class RowsManager:
     """Class for managing rows of the the matrix based on live data."""
+
+    # todo need to ignore horizontal lines, they are braking the row construction because angle might be ~90˚
+
     def __init__(self):
         # list of all vectors that will be processed
         self.vectors: List[Vector] = []
