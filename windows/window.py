@@ -7,6 +7,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QFileDialog
 
 from rows_manager import RowsManager
+from voronoi_tessellation import VoronoiTesselation, Cell
 from windows.ui import PaintUI
 
 
@@ -31,6 +32,7 @@ class AppWindow(QtWidgets.QMainWindow, PaintUI):
 
         # self.vectorise = Vectorise()
         self.rows_manager = RowsManager()
+        self.voronoi_tesselation = None
 
     def clear(self):
         self.image.fill(Qt.white)
@@ -109,6 +111,37 @@ class AppWindow(QtWidgets.QMainWindow, PaintUI):
             painter.setPen(QPen(Qt.yellow, 4, Qt.SolidLine))
             painter.drawLine(*self.top, self.top[0] + 1, self.top[1] + 1)
             painter.drawLine(*self.bottom, self.bottom[0] + 1, self.bottom[1] + 1)
+
+            self.update()
+
+        if e.key() == Qt.Key_S:
+            painter = QPainter(self.image)
+
+            self.voronoi_tesselation = VoronoiTesselation(self.rows_manager.dots)
+            self.voronoi_tesselation.process()
+
+            for cell in Cell.objects_dict.values():
+                for neighbor in cell.neighbors:
+                    if not neighbor.is_finite:
+                        continue
+                    painter.drawLine(
+                        int(neighbor.dot_start[0]), int(neighbor.dot_start[1]),
+                        int(neighbor.dot_end[0]), int(neighbor.dot_end[1])
+                    )
+            self.update()
+
+        if e.key() == Qt.Key_D:
+            painter = QPainter(self.image)
+
+            self.voronoi_tesselation = VoronoiTesselation(self.rows_manager.dots)
+            self.voronoi_tesselation.process()
+
+            for cell in Cell.objects_dict.values():
+                for neighbor in cell.neighbors:
+                    painter.drawLine(
+                        int(neighbor.dot_start[0]), int(neighbor.dot_start[1]),
+                        int(neighbor.dot_end[0]), int(neighbor.dot_end[1])
+                    )
 
             self.update()
 

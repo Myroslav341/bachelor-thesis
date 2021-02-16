@@ -103,6 +103,8 @@ class RowsManager:
     def __init__(self):
         # list of all vectors that will be processed
         self.vectors: List[Vector] = []
+        # list of all dots without dots of horizontal hatches, used for Voronoi tesselation
+        self.dots: List[Dot] = []
         # list of cos between (1,0) and each vector
         self.cos_list: List[float] = []
         # list of top dots
@@ -118,6 +120,9 @@ class RowsManager:
 
         # the middle of the hatch, based on this dots vectors will be created
         middle_dot = ((left[0] + right[0]) / 2, (top[1] + bottom[1]) / 2)
+
+        if not self.is_hatch_horizontal(top[1], bottom[1]):
+            self.dots.append(middle_dot)
 
         if len(self.vectors) == 0:
             self.vectors.append(Vector(middle_dot, middle_dot))
@@ -154,6 +159,13 @@ class RowsManager:
             is_added_to_existing_row = False
             logging.info(f"processing hatch {i}")
 
+            if (
+                len(self.top_list) > i + 1
+                and self.is_hatch_horizontal(self.top_list[i + 1][1], self.bottom_list[i + 1][1])
+            ):
+                logging.info(f"hatch {i + 1} is horizontal: {top}, {bottom}. skipping {i} vector.")
+                is_added_to_existing_row = True  # to not change top bottom of last row
+                continue
             if cos <= config.NEW_ROW_ANGLE:
                 # add this hatch to current row because angle is smaller than config
                 self._add_hatch_to_current_row(vector=vector, top=top, bottom=bottom)
@@ -182,6 +194,7 @@ class RowsManager:
         self.top_list = []
         self.bottom_list = []
         self.cos_list = []
+        self.dots = []
 
     def _add_hatch_to_current_row(self, *, vector: Vector, top: Dot, bottom: Dot):
         """Save hutch to the current row."""
@@ -201,6 +214,7 @@ class RowsManager:
         for row in self.rows:
             if row.top and row.bottom and row.is_dot_inside_row(vector.end):
                 is_added_to_existing_row = True
+                logging.info(f"hatch was added to the row {row.index}")
                 break
 
         # if no row was found for this hatch, create new row
@@ -214,3 +228,7 @@ class RowsManager:
             self.rows[-1].vectors_list = [Vector(vector.end, vector.end)]
 
         return is_added_to_existing_row, row_id
+
+    def is_hatch_horizontal(self, top: float, bottom: float) -> bool:
+        # todo move to config
+        return abs(top - bottom) <= 20
