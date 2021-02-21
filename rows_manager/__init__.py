@@ -1,6 +1,6 @@
 import logging
 from dataclasses import dataclass, field
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Dict
 
 from config import config
 from lib import (
@@ -11,6 +11,7 @@ from lib import (
     get_triangle_square,
 )
 from lib.decorators import singleton
+from voronoi_tessellation import Cell
 
 
 @dataclass
@@ -24,6 +25,8 @@ class MatrixRow:
     bottom: float = field(default=0)
     _top_dot: Optional[Dot] = field(default=None)
     _bottom_dot: Optional[Dot] = field(default=None)
+
+    voronoi_cells: List[Cell] = field(default_factory=list)
 
     def __post_init__(self):
         self._is_vector_extended = False
@@ -98,8 +101,6 @@ class MatrixRow:
 class RowsManager:
     """Class for managing rows of the the matrix based on live data."""
 
-    # todo need to ignore horizontal lines, they are braking the row construction because angle might be ~90˚
-
     def __init__(self):
         # list of all vectors that will be processed
         self.vectors: List[Vector] = []
@@ -114,6 +115,8 @@ class RowsManager:
 
         # list of processed rows
         self.rows: List[MatrixRow] = []
+
+        self.processed = False
 
     def add_new_hatch(self, left: Dot, right: Dot, top: Dot, bottom: Dot):
         """Save new user hatch. Create a vector for it, save top and bottom."""
@@ -151,6 +154,7 @@ class RowsManager:
 
         # bool flag is the last hatch was ignored because found a row for it
         is_added_to_existing_row = False
+        is_prev_horizontal = False
 
         for cos, vector, top, bottom in zip(
             self.cos_list, self.vectors[1:], self.top_list, self.bottom_list
@@ -165,9 +169,13 @@ class RowsManager:
             ):
                 logging.info(f"hatch {i + 1} is horizontal: {top}, {bottom}. skipping {i} vector.")
                 is_added_to_existing_row = True  # to not change top bottom of last row
+                is_prev_horizontal = True
                 continue
             if cos <= config.NEW_ROW_ANGLE:
                 # add this hatch to current row because angle is smaller than config
+                if is_prev_horizontal:
+                    vector.begin = self.rows[-1].final_vector.end
+                    is_prev_horizontal = False
                 self._add_hatch_to_current_row(vector=vector, top=top, bottom=bottom)
             else:
                 # ignore this hatch if row will be found or create a new row
@@ -185,10 +193,25 @@ class RowsManager:
 
         logging.info(f"was processed {i + 1} hatches, and was distinguished {len(self.rows)} rows.")
 
+        self.processed = True
+
         return self.rows
+
+    def add_voronoi_cells(self):
+        assert self.processed
+        cell_id_center_dict: Dict[Dot, int] = {}
+
+        for cell_id, cell_obj in Cell.objects_dict.items():
+            cell_id_center_dict[cell_obj.center] = cell_id
+
+        for row in self.rows:
+            for vector in row.vectors_list:
+                row.voronoi_cells.append(Cell.objects_dict[cell_id_center_dict[vector.begin]])
+            row.voronoi_cells.append(Cell.objects_dict[cell_id_center_dict[row.vectors_list[-1].end]])
 
     def clear(self):
         """Clear all saved data."""
+        self.processed = False
         self.rows = []
         self.vectors = []
         self.top_list = []

@@ -1,7 +1,7 @@
 import random
 from string import ascii_lowercase
 from config import Config
-from PyQt5.QtGui import QPainter, QImage, QPen
+from PyQt5.QtGui import QPainter, QImage, QPen, QStaticText
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QFileDialog
@@ -142,6 +142,20 @@ class AppWindow(QtWidgets.QMainWindow, PaintUI):
                         int(neighbor.dot_start[0]), int(neighbor.dot_start[1]),
                         int(neighbor.dot_end[0]), int(neighbor.dot_end[1])
                     )
+
+            self.update()
+
+        if e.key() == Qt.Key_F:
+            painter = QPainter(self.image)
+
+            self.rows_manager.add_voronoi_cells()
+
+            for row in self.rows_manager.rows:
+                for cell in row.voronoi_cells:
+                    st = QStaticText(f"{row.index}_{cell.id}")
+                    st.setTextWidth(20)
+                    st.setTextFormat(Qt.PlainText)
+                    painter.drawStaticText(int(cell.center[0]), int(cell.center[1]), st)
 
             self.update()
 
