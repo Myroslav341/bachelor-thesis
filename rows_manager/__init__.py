@@ -209,6 +209,15 @@ class RowsManager:
                 row.voronoi_cells.append(Cell.objects_dict[cell_id_center_dict[vector.begin]])
             row.voronoi_cells.append(Cell.objects_dict[cell_id_center_dict[row.vectors_list[-1].end]])
 
+        # calculate the width of voronoi cells
+        for row in self.rows:
+            neighbor_cells = [(row.voronoi_cells[1],)]
+            for i in range(1, len(row.voronoi_cells) - 1):
+                neighbor_cells.append((row.voronoi_cells[i - 1], row.voronoi_cells[i + 1]))
+            neighbor_cells.append((row.voronoi_cells[-2],))
+            for i, cell in enumerate(row.voronoi_cells):
+                cell.calculate_width([neighbor.id for neighbor in neighbor_cells[i]])
+
     def clear(self):
         """Clear all saved data."""
         self.processed = False

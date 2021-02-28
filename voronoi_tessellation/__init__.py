@@ -6,7 +6,7 @@ from numpy import ones, vstack
 from numpy.linalg import lstsq
 from scipy.spatial import Voronoi
 
-from lib import Dot
+from lib import Dot, line_intersection, get_dist_between_dots
 from lib.decorators import singleton
 
 
@@ -56,12 +56,36 @@ class Cell:
     is_closed: bool = False
     neighbors: List[CellNeighbor] = field(default_factory=list)
 
+    width: Optional[float] = None
+
+    # the voronoi cell that form a number with the current cell
+    come_with: Optional["Cell"] = None
+
     def __post_init__(self):
         if not hasattr(Cell, "objects_dict"):
             Cell.objects_dict = {}
 
         if self.id not in Cell.objects_dict:
             Cell.objects_dict[self.id] = self
+
+    def calculate_width(self, neighbor_ids: List[int]):
+        neighbors = [neighbor for neighbor in self.neighbors if neighbor.neighbor_id in neighbor_ids]
+        if len(neighbors) == 1:
+            self.width = self._get_dist_to_neighbor(neighbors[0])
+        elif len(neighbors) == 2:
+            w1 = self._get_dist_to_neighbor(neighbors[0])
+            w2 = self._get_dist_to_neighbor(neighbors[1])
+            self.width = min(w1, w2)
+        else:
+            raise AttributeError("too many neighbors given, 1 or 2 expected.")
+
+    def _get_dist_to_neighbor(self, neighbor: CellNeighbor):
+        points_on_divider = (neighbor.dot_start, neighbor.dot_end)
+        points_on_line = (self.center, (self.center[0] + 1, self.center[1]))
+
+        x, y = line_intersection(points_on_divider, points_on_line)
+
+        return get_dist_between_dots((x, y), self.center)
 
 
 @singleton

@@ -34,4 +34,7 @@ from lib import get_angle_between_vectors, Vector, get_straight_coefficients
 
 
 if __name__ == '__main__':
-    print(get_angle_between_vectors(Vector((0, 0), (-1, 0)), Vector((0, 0), (1, 0))))
+    pass
+    # x, y = line_intersection(((0, 1), (1, 0)), ((0, 0), (1, 1)))
+    # print(x, y)
+    # print(get_angle_between_vectors(Vector((0, 0), (-1, 0)), Vector((0, 0), (1, 0))))

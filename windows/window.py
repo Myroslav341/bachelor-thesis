@@ -138,10 +138,13 @@ class AppWindow(QtWidgets.QMainWindow, PaintUI):
 
             for cell in Cell.objects_dict.values():
                 for neighbor in cell.neighbors:
-                    painter.drawLine(
-                        int(neighbor.dot_start[0]), int(neighbor.dot_start[1]),
-                        int(neighbor.dot_end[0]), int(neighbor.dot_end[1])
-                    )
+                    try:
+                        painter.drawLine(
+                            int(neighbor.dot_start[0]), int(neighbor.dot_start[1]),
+                            int(neighbor.dot_end[0]), int(neighbor.dot_end[1])
+                        )
+                    except OverflowError:
+                        continue
 
             self.update()
 
@@ -156,6 +159,8 @@ class AppWindow(QtWidgets.QMainWindow, PaintUI):
                     st.setTextWidth(20)
                     st.setTextFormat(Qt.PlainText)
                     painter.drawStaticText(int(cell.center[0]), int(cell.center[1]), st)
+                    print(cell.width, end=" ")
+                print()
 
             self.update()
 
