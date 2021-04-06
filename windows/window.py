@@ -6,6 +6,7 @@ from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QFileDialog
 
+from lib.project import save_rows_data
 from rows_manager import RowsManager
 from voronoi_tessellation import VoronoiTesselation, Cell
 from windows.ui import PaintUI
@@ -159,10 +160,43 @@ class AppWindow(QtWidgets.QMainWindow, PaintUI):
                     st.setTextWidth(20)
                     st.setTextFormat(Qt.PlainText)
                     painter.drawStaticText(int(cell.center[0]), int(cell.center[1]), st)
-                    print(cell.width, end=" ")
+                    print(cell.digit_width, end=" ")
                 print()
 
             self.update()
+
+        if e.key() == Qt.Key_G:
+            self.rows_manager.predict_rows_neighbor_cells()
+            for row in self.rows_manager.rows:
+                for cell in row.voronoi_cells:
+                    if cell.relative_width:
+                        print(cell.relative_width, end=", ")
+                    else:
+                        print("-1, ", end="")
+                print()
+
+            for row in self.rows_manager.rows:
+                neighbors = []
+                for cell in row.voronoi_cells:
+                    if cell.come_with:
+                        neighbors.append(cell.id)
+                    elif not cell.come_with and not neighbors:
+                        print(f"({cell.id})", end=" ")
+                    elif not cell.come_with and neighbors:
+                        neighbors.append(cell.id)
+                        print(f"({', '.join([str(n) for n in neighbors])})", end=" ")
+                        neighbors = []
+                    else:
+                        print(f"({cell.id})", end=" ")
+                        neighbors = []
+                print()
+
+        if e.key() == Qt.Key_Q:
+            save_rows_data()
+
+    def save_as_test_data(self):
+        for row in self.rows_manager.rows:
+            pass
 
     def save(self, path=None):
         if path is not None:

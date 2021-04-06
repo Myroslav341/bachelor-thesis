@@ -8,7 +8,7 @@ from lib import (
     Vector,
     get_angle_between_vectors,
     get_dist_to_straight,
-    get_triangle_square,
+    get_triangle_square, get_dist_between_dots,
 )
 from lib.decorators import singleton
 from voronoi_tessellation import Cell
@@ -95,6 +95,15 @@ class MatrixRow:
                 self._bottom_dot, self.final_vector.begin, self.final_vector.end
             )
             self.bottom = d
+
+    def predict_neighbor_cells(self):
+        average_cell_width = sum([cell.digit_width for cell in self.voronoi_cells]) / len(self.voronoi_cells)
+
+        for i, cell in enumerate(self.voronoi_cells[:-1]):
+            d = get_dist_between_dots(cell.center, self.voronoi_cells[i + 1].center)
+            cell.relative_width = d / average_cell_width
+            if cell.relative_width <= 1.5:
+                cell.come_with = self.voronoi_cells[i + 1]
 
 
 @singleton
@@ -217,6 +226,10 @@ class RowsManager:
             neighbor_cells.append((row.voronoi_cells[-2],))
             for i, cell in enumerate(row.voronoi_cells):
                 cell.calculate_width([neighbor.id for neighbor in neighbor_cells[i]])
+
+    def predict_rows_neighbor_cells(self):
+        for row in self.rows:
+            row.predict_neighbor_cells()
 
     def clear(self):
         """Clear all saved data."""

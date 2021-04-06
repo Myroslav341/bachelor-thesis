@@ -56,7 +56,8 @@ class Cell:
     is_closed: bool = False
     neighbors: List[CellNeighbor] = field(default_factory=list)
 
-    width: Optional[float] = None
+    digit_width: Optional[float] = None
+    relative_width: Optional[float] = None
 
     # the voronoi cell that form a number with the current cell
     come_with: Optional["Cell"] = None
@@ -71,11 +72,11 @@ class Cell:
     def calculate_width(self, neighbor_ids: List[int]):
         neighbors = [neighbor for neighbor in self.neighbors if neighbor.neighbor_id in neighbor_ids]
         if len(neighbors) == 1:
-            self.width = self._get_dist_to_neighbor(neighbors[0])
+            self.digit_width = self._get_dist_to_neighbor(neighbors[0])
         elif len(neighbors) == 2:
             w1 = self._get_dist_to_neighbor(neighbors[0])
             w2 = self._get_dist_to_neighbor(neighbors[1])
-            self.width = min(w1, w2)
+            self.digit_width = min(w1, w2)
         else:
             raise AttributeError("too many neighbors given, 1 or 2 expected.")
 

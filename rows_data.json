@@ -1,0 +1,209 @@
+{
+    "separate_digits": [
+        {
+            "id": 0,
+            "rows": [
+                {
+                    "number": 0,
+                    "digits": [
+                        {
+                            "digit_width": 56.75440528634361,
+                            "relative_width": 2.2074042980997515,
+                            "dist_to_next": 113.50440520085553,
+                            "connected_with_next": false
+                        },
+                        {
+                            "digit_width": 48.75257731958766,
+                            "relative_width": 1.89133657670753,
+                            "dist_to_next": 97.25224933131366,
+                            "connected_with_next": false
+                        },
+                        {
+                            "digit_width": 48.75257731958763,
+                            "relative_width": null,
+                            "dist_to_next": null,
+                            "connected_with_next": false
+                        }
+                    ]
+                },
+                {
+                    "number": 1,
+                    "digits": [
+                        {
+                            "digit_width": 52.50476190476192,
+                            "relative_width": 3.7660476014834536,
+                            "dist_to_next": 105.00476179678711,
+                            "connected_with_next": false
+                        },
+                        {
+                            "digit_width": 11.88297872340425,
+                            "relative_width": 0.8475950264859562,
+                            "dist_to_next": 23.632604596192948,
+                            "connected_with_next": true
+                        },
+                        {
+                            "digit_width": 11.882978723404221,
+                            "relative_width": 2.5287716440191867,
+                            "dist_to_next": 70.50709184188496,
+                            "connected_with_next": false
+                        },
+                        {
+                            "digit_width": 35.257092198581574,
+                            "relative_width": null,
+                            "dist_to_next": null,
+                            "connected_with_next": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 1,
+            "rows": [
+                {
+                    "number": 0,
+                    "digits": [
+                        {
+                            "digit_width": 22.724719101123483,
+                            "relative_width": 1.1638634332427917,
+                            "dist_to_next": 44.972213643537714,
+                            "connected_with_next": true
+                        },
+                        {
+                            "digit_width": 22.72471910112408,
+                            "relative_width": 3.002285952014666,
+                            "dist_to_next": 116.00969787047978,
+                            "connected_with_next": false
+                        },
+                        {
+                            "digit_width": 54.55619266055044,
+                            "relative_width": 2.8223315615078928,
+                            "dist_to_next": 109.05617818353988,
+                            "connected_with_next": false
+                        },
+                        {
+                            "digit_width": 54.556192660550494,
+                            "relative_width": null,
+                            "dist_to_next": null,
+                            "connected_with_next": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "rows": [
+                {
+                    "number": 0,
+                    "digits": [
+                        {
+                            "digit_width": 42.5235294117647,
+                            "relative_width": 2.4945612892805014,
+                            "dist_to_next": 85.0235261559999,
+                            "connected_with_next": false
+                        },
+                        {
+                            "digit_width": 19.759615384615387,
+                            "relative_width": 1.1518385541918514,
+                            "dist_to_next": 39.2587569849072,
+                            "connected_with_next": true
+                        },
+                        {
+                            "digit_width": 19.75961538461536,
+                            "relative_width": 3.1845696530010468,
+                            "dist_to_next": 108.54146673046205,
+                            "connected_with_next": false
+                        },
+                        {
+                            "digit_width": 54.29147465437791,
+                            "relative_width": null,
+                            "dist_to_next": null,
+                            "connected_with_next": false
+                        }
+                    ]
+                },
+                {
+                    "number": 1,
+                    "digits": [
+                        {
+                            "digit_width": 47.53289473684211,
+                            "relative_width": 2.7100803239430107,
+                            "dist_to_next": 95.03288904374106,
+                            "connected_with_next": false
+                        },
+                        {
+                            "digit_width": 47.532894736842124,
+                            "relative_width": 3.1226756561935574,
+                            "dist_to_next": 109.50114154656106,
+                            "connected_with_next": false
+                        },
+                        {
+                            "digit_width": 22.599999999999966,
+                            "relative_width": 1.2861265545745946,
+                            "dist_to_next": 45.09988913511872,
+                            "connected_with_next": true
+                        },
+                        {
+                            "digit_width": 22.600000000000023,
+                            "relative_width": null,
+                            "dist_to_next": null,
+                            "connected_with_next": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "rows": [
+                {
+                    "number": 0,
+                    "digits": [
+                        {
+                            "digit_width": 57.5,
+                            "relative_width": 1.9997983820156757,
+                            "dist_to_next": 115.0,
+                            "connected_with_next": false
+                        },
+                        {
+                            "digit_width": 57.5,
+                            "relative_width": 2.0001007861277955,
+                            "dist_to_next": 115.0173899895142,
+                            "connected_with_next": false
+                        },
+                        {
+                            "digit_width": 57.517391304347825,
+                            "relative_width": null,
+                            "dist_to_next": null,
+                            "connected_with_next": false
+                        }
+                    ]
+                },
+                {
+                    "number": 1,
+                    "digits": [
+                        {
+                            "digit_width": 58.46030042918456,
+                            "relative_width": 1.9622867732030875,
+                            "dist_to_next": 116.71011095873399,
+                            "connected_with_next": false
+                        },
+                        {
+                            "digit_width": 58.46030042918456,
+                            "relative_width": 2.0681945908435537,
+                            "dist_to_next": 123.00914600142544,
+                            "connected_with_next": false
+                        },
+                        {
+                            "digit_width": 61.509146341463406,
+                            "relative_width": null,
+                            "dist_to_next": null,
+                            "connected_with_next": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
