@@ -62,6 +62,8 @@ class Cell:
     # the voronoi cell that form a number with the current cell
     come_with: Optional["Cell"] = None
 
+    predicted_number: Optional[int] = None
+
     def __post_init__(self):
         if not hasattr(Cell, "objects_dict"):
             Cell.objects_dict = {}

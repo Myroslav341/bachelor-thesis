@@ -105,6 +105,23 @@ class MatrixRow:
             if cell.relative_width <= 1.5:
                 cell.come_with = self.voronoi_cells[i + 1]
 
+    def predict_neighbor_cells_2(self):
+        for i, cell in enumerate(self.voronoi_cells[:-1]):
+            if self.is_dots_come_together(i, i + 1):
+                cell.come_with = self.voronoi_cells[i + 1]
+
+    def is_dots_come_together(self, i: int, j: int) -> bool:
+        height = self.top + self.bottom
+
+        k = 1 / height
+        dots = [self.vectors_list[0].begin] + [v.end for v in self.vectors_list]
+        d1, d2 = dots[i], dots[j]
+        dist = get_dist_between_dots(d1, d2) * k
+
+        f_value = 0.0461394 * k * 1000 + 0.67440243
+
+        return dist < f_value
+
 
 @singleton
 class RowsManager:
@@ -230,6 +247,10 @@ class RowsManager:
     def predict_rows_neighbor_cells(self):
         for row in self.rows:
             row.predict_neighbor_cells()
+
+    def predict_rows_neighbor_cells_2(self):
+        for row in self.rows:
+            row.predict_neighbor_cells_2()
 
     def clear(self):
         """Clear all saved data."""
