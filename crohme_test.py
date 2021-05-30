@@ -5,16 +5,17 @@ import cv2
 import numpy as np
 
 from cnn import load_image_and_predict, CNN
+from config import Config
 from rows_manager import RowsManager
 from voronoi_tessellation import VoronoiTesselation
 
 
 def go_though_all():
-    for f in os.listdir("/Users/a1/univ/S1/nnnn/"):
+    for f in os.listdir(f"{Config.BASE_DIR}/nnnn/"):
         if f == ".DS_Store":
             continue
         print(f)
-        a = ElementTree(file=f"/Users/a1/univ/S1/nnnn/{f}")
+        a = ElementTree(file=f"{Config.BASE_DIR}/nnnn/{f}")
 
         img = np.zeros((1000, 1000, 3), np.uint8)
 
@@ -42,7 +43,7 @@ def go_though_original():
     for _ in range(3, 123):
 
         a = ElementTree(
-            file=f"/Users/a1/Downloads/TC11_package 2/CROHME2014_data/MatricesTest/RIT_MatrixTest_2014_{_}.inkml"
+            file=f"{Config.BASE_DIR}/CROHME2014_data/MatricesTest/RIT_MatrixTest_2014_{_}.inkml"
         )
 
         try:
@@ -69,7 +70,7 @@ def go_though_original():
 
             q = input()
             if q == "s":
-                os.system(f"cp /Users/a1/Downloads/TC11_package\ 2/CROHME2014_data/MatricesTest/RIT_MatrixTest_2014_{_}.inkml /Users/a1/univ/S1/nnnn/")
+                os.system(f"cp {Config.BASE_DIR}/CROHME2014_data/MatricesTest/RIT_MatrixTest_2014_{_}.inkml {Config.BASE_DIR}/nnnn/")
 
         except Exception as e:
             print(e)
@@ -79,7 +80,7 @@ def go_though_original():
 def show_concrete():
     f = "RIT_MatrixTest_2014_58.inkml"
 
-    a = ElementTree(file=f"/Users/a1/univ/S1/nnnn/{f}")
+    a = ElementTree(file=f"{Config.BASE_DIR}/nnnn/{f}")
 
     img = np.zeros((1000, 1000, 3), np.uint8)
 
@@ -135,7 +136,7 @@ def test():
 
     rows_manager = RowsManager()
 
-    a = ElementTree(file=f"/Users/a1/univ/S1/nnnn/{f}")
+    a = ElementTree(file=f"{Config.BASE_DIR}/nnnn/{f}")
 
     img = np.zeros((1000, 1000, 3), np.uint8)
 

@@ -7,3 +7,4 @@ dataset_augmented/
 dataset_augmented_2/
 test_data/
 dots_dist_data.json
+.DS_Store
