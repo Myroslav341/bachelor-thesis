@@ -146,4 +146,3 @@ class VoronoiTesselation:
 if __name__ == '__main__':
     tesselation = VoronoiTesselation([(0, 0), (0, 1), (1, 1), (1, 0)])
     tesselation.process()
-    assert True

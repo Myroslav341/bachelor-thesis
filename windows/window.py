@@ -72,10 +72,9 @@ class AppWindow(QtWidgets.QMainWindow, PaintUI):
 
             painter = QPainter(self.image)
             painter.setPen(QPen(Qt.red, 4, Qt.SolidLine))
-            vector = self.rows_manager.vectors[-1]
 
+            # vector = self.rows_manager.vectors[-1]
             # painter.drawLine(*vector.paint_format())
-
             # self.update()
 
     def mouseMoveEvent(self, event):
@@ -106,19 +105,20 @@ class AppWindow(QtWidgets.QMainWindow, PaintUI):
                     continue
                 x, y, w, z = row.final_vector.paint_format()
                 painter.setPen(QPen(Qt.red, 4, Qt.SolidLine))
-                # painter.drawEllipse(x - 2, y - 2, 4, 4)
-                # painter.drawLine(x, y, w, z)
-                # self.update()
+                painter.drawEllipse(x - 2, y - 2, 4, 4)
+                painter.drawLine(x, y, w, z)
+                self.update()
 
                 painter.setPen(QPen(Qt.green, 4, Qt.SolidLine))
-                # painter.drawLine(x, y + row.bottom, w, z + row.bottom)
-                # painter.drawLine(x, y - row.top, w, z - row.top)
+                painter.drawLine(x, y + row.bottom, w, z + row.bottom)
+                painter.drawLine(x, y - row.top, w, z - row.top)
 
             painter.setPen(QPen(Qt.yellow, 4, Qt.SolidLine))
+
             # painter.drawLine(*self.top, self.top[0] + 1, self.top[1] + 1)
             # painter.drawLine(*self.bottom, self.bottom[0] + 1, self.bottom[1] + 1)
 
-            # self.update()
+            self.update()
 
         if e.key() == Qt.Key_S:
             painter = QPainter(self.image)
@@ -233,8 +233,6 @@ class AppWindow(QtWidgets.QMainWindow, PaintUI):
             for dot in dots
         ]
         average_cell_width = sum([cell.digit_width * k for cell in row.voronoi_cells]) / len(row.voronoi_cells)
-        print(dots)
-        print(average_cell_width)
 
         with open('dots_dist_data.json', 'r') as openfile:
             existing_info = json.load(openfile)

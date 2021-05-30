@@ -10,22 +10,18 @@ from keras.models import Sequential, load_model
 from keras.layers import Dense, Dropout, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 from keras import backend as K, layers
-# from keras.utils import print_summary
-from typing import List
 
-from tensorflow.python.debug.examples.debug_mnist import tf
 from tensorflow.python.keras.utils.layer_utils import print_summary
 
 from config import Config
 import matplotlib.pyplot as plt
-import numpy as np
 
 from lib.decorators import singleton
 
 
 @singleton
 class CNN:
-    def train(self, save_name: str = None):
+    def train(self):
         x_train, y_train = self.__load_data(f"{Config.BASE_DIR}/dataset_augmented_2/")
         x_test, y_test, _ = self.__load_test_data(f"{Config.BASE_DIR}/test_data")
 
@@ -50,9 +46,6 @@ class CNN:
         x_train /= 255
         x_test /= 255
 
-        print('x_train shape:', x_train.shape)
-        print(x_train.shape[0], 'train samples')
-
         y_train = keras.utils.to_categorical(y_train, self.num_classes)
         y_test = keras.utils.to_categorical(y_test, self.num_classes)
 
@@ -60,37 +53,15 @@ class CNN:
 
         print_summary(model)
 
-        # return
-
-        aug = ImageDataGenerator(
-            rotation_range=20,
-            width_shift_range=0.1,
-            height_shift_range=0.1,
-            shear_range=0.2,
-            zoom_range=0.2,
-            # horizontal_flip=True,
-            # vertical_flip=True,
-            fill_mode="nearest"
-        )
-
         h = model.fit(x=x_train, y=y_train, epochs=epochs, batch_size=batch_size)
-        # h = model.fit_generator(aug.flow(x_train, y_train, batch_size=batch_size),
-        #                         epochs=epochs,
-        #                         steps_per_epoch=len(x_train) // batch_size)
 
-        # score = model.evaluate(x_test, y_test, verbose=0)
-
-        # print('Test loss:', score[0])
-        # print('Test accuracy:', score[1])
-
-        # if save_name is not None:
-        # model.save("/Users/a1/univ/S1/diploma/cnn/models/4.h5")
+        # model.save(f"{Config.BASE_DIR}/cnn/models/4.h5")
 
         score = model.evaluate(x_test, y_test, verbose=0)
         print('Test loss:', score[0])
         print('Test accuracy:', score[1])
 
-        # print_summary(model)
+        print_summary(model)
 
         plt.plot(h.history['acc'])
         plt.title('Model accuracy')
@@ -113,7 +84,6 @@ class CNN:
     def predict(self, file_path: str):
         img_data = cv2.imread(file_path, cv2.IMREAD_GRAYSCALE)
         img_data = cv2.resize(img_data, (28, 28))
-        # img_data = np.invert(img_data)
 
         img_data = img_data.reshape(1, 28, 28, 1)
 
@@ -126,14 +96,7 @@ class CNN:
         return f
 
     def predict_concrete_number(self, data) -> int:
-        # plt.imshow(data, interpolation='nearest')
-        # plt.show()
-
         img_data = cv2.resize(data, (28, 28))
-        # img_data = np.invert(img_data)
-
-        plt.imshow(img_data, interpolation='nearest')
-        plt.show()
 
         img_data_r = img_data.reshape(1, 28, 28, 1)
 
@@ -149,7 +112,6 @@ class CNN:
                 max_v = v
                 d = i
 
-        # img_data = np.invert(img_data)
         data = Image.fromarray(img_data)
         data.save(f"{Config.BASE_DIR}/test_data/{d}_{random.randint(100000, 999999)}.png")
 
@@ -161,10 +123,6 @@ class CNN:
         count = 0
         for x, y, label in zip(x_test, y_test, labels):
             img_data = cv2.resize(x, (28, 28))
-            # img_data = np.invert(img_data)
-
-            # plt.imshow(img_data, interpolation='nearest')
-            # plt.show()
 
             img_data_r = img_data.reshape(1, 28, 28, 1)
 
@@ -187,94 +145,19 @@ class CNN:
 
         print('Test accuracy:', count / len(x_test))
 
-        # if K.image_data_format() == 'channels_first':
-        #     x_test = x_test.reshape(x_test.shape[0], 1, 28, 28)
-        # else:
-        #     x_test = x_test.reshape(x_test.shape[0], 28, 28, 1)
-        # x_test = x_test.astype('float32')
-        # x_test /= 255
-        # y_test = keras.utils.to_categorical(y_test, 10)
-        # score = self.model.evaluate(x_test, y_test, verbose=0)
-        # print('Test loss:', score[0])
-        # print('Test accuracy:', score[1])
-
     def __create_model(self):
         model = Sequential()
         model.add(Conv2D(32, kernel_size=(3, 3), input_shape=self.input_shape))
         model.add(MaxPooling2D(pool_size=(2, 2)))
         model.add(Conv2D(64, kernel_size=(3, 3)))
         model.add(MaxPooling2D(pool_size=(2, 2)))
-        model.add(Flatten())  # Flattening the 2D arrays for fully connected layers
+        model.add(Flatten())
         model.add(Dropout(0.2))
         model.add(Dense(128, activation="relu"))
         model.add(Dropout(0.6))
         model.add(Dense(10, activation="softmax"))
 
         model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=["acc"])
-
-        return model
-        model = keras.Sequential(
-            [
-                keras.Input(shape=self.input_shape),
-                layers.Conv2D(32, kernel_size=(3, 3), activation="relu"),
-                layers.MaxPooling2D(pool_size=(2, 2)),
-                layers.Conv2D(64, kernel_size=(3, 3), activation="relu"),
-                layers.MaxPooling2D(pool_size=(2, 2)),
-                layers.Flatten(),
-                layers.Dropout(0.5),
-                layers.Dense(self.num_classes, activation="softmax"),
-            ]
-        )
-        model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"])
-        return model
-
-        model.add(Conv2D(8, kernel_size=(3, 3),
-                         activation='relu',
-                         input_shape=self.input_shape))
-
-        # model.add(Conv2D(16, (3, 3),
-        #                  activation='relu'
-        #                  ))
-        # model.add(MaxPooling2D(pool_size=(2, 2)))
-
-        model.add(Conv2D(32, (3, 3),
-                         activation='relu'
-                         ))
-        model.add(MaxPooling2D(pool_size=(2, 2)))
-
-        model.add(Conv2D(64, (3, 3),
-                         activation='relu'
-                         ))
-
-        # model.add(Conv2D(128, (3, 3),
-        #                  activation='relu'
-        #                  ))
-        #
-        # model.add(Conv2D(128, (3, 3),
-        #                  activation='relu'
-        #                  ))
-        # model.add(MaxPooling2D(pool_size=(2, 2)))
-
-        model.add(Flatten())
-
-        # model.add(Dense(1024,
-        #                 activation='relu'
-        #                 ))
-        # model.add(Dense(512,
-        #                 activation='relu'
-        #                 ))
-        model.add(Dense(128,
-                        activation='relu'
-                        ))
-        model.add(Dropout(0.5))
-        model.add(Dense(32,
-                        activation='relu'
-                        ))
-        model.add(Dense(self.num_classes, activation='softmax'))
-
-        model.compile(loss=keras.losses.categorical_crossentropy,
-                      optimizer=keras.optimizers.Adam(learning_rate=0.0001),
-                      metrics=['acc'])
 
         return model
 
@@ -311,7 +194,6 @@ class CNN:
             if not x.endswith(".png"):
                 continue
             img_data = cv2.imread(path + "/" + x, cv2.IMREAD_GRAYSCALE)
-            # img_data = np.invert(img_data)
 
             train_x[m] = array(img_data)
             train_y[m] = int(x[0])

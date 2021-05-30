@@ -1,3 +1,9 @@
 .idea
 venv/
 __pycache__
+dataset/
+dataset_2/
+dataset_augmented/
+dataset_augmented_2/
+test_data/
+dots_dist_data.json
